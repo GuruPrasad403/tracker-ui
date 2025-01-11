@@ -111,7 +111,7 @@ const Items = ({ title, amount }) => (
 );
 
 /* Greetings Component */
-const Greetings = () => {
+export const Greetings = () => {
     const hours = new Date().getHours();
     const greet = hours < 12 ? "Morning" : hours <= 17 ? "Afternoon" : "Evening";
     return <span>Good {greet},</span>;
