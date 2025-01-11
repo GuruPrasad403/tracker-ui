@@ -1,8 +1,7 @@
-import image from '../assets/image.png'
+import image from '../assets/image.png';
 import { CiCalendarDate } from "react-icons/ci";
 import { FaAngleDown } from "react-icons/fa6";
-import { IoIosArrowRoundBack } from "react-icons/io";
-import { IoIosArrowRoundForward } from "react-icons/io";
+import { IoIosArrowRoundBack, IoIosArrowRoundForward } from "react-icons/io";
 import { FaVideo } from "react-icons/fa";
 import { LuCalendarClock } from "react-icons/lu";
 import { RxCross1 } from "react-icons/rx";
@@ -10,7 +9,8 @@ import { TfiVideoClapper } from "react-icons/tfi";
 import useFetch from '../hook/useFetch';
 import Loading from './Loading';
 import { useEffect, useState } from 'react';
-import Noexpense from '../assets/NoExpense.png'
+import Noexpense from '../assets/NoExpense.png';
+
 export default function Mainsection() {
     const [date, setDate] = useState();
     const token = localStorage.getItem("tracker-token");
@@ -24,16 +24,16 @@ export default function Mainsection() {
     }, []);
 
     return (
-        <div className="flex flex-col md:grid md:grid-cols-1 lg:grid-cols-12 lg:gap-4 px-4 md:px-6 lg:px-10 lg:mt-20">
-            
+        <div className="flex flex-col lg:grid lg:grid-cols-12 lg:gap-4 px-4 md:px-6 lg:px-10 lg:mt-20">
             {/* Profile Section */}
-            <div className="flex flex-col items-center w-full md:mb-6 lg:col-span-3">
+            <div className="flex flex-col items-center w-full mb-6 lg:col-span-3">
                 <Profile email={userInfo?.email} name={userInfo?.name} date={userInfo?.joined} loading={loading} />
             </div>
 
             {/* Greetings and Expenditure Section */}
-            <div className="flex flex-col gap-6 w-full md:mb-6 lg:col-span-5">
+            <div className="flex flex-col gap-6 w-full mb-6 lg:col-span-5">
                 {/* Greeting Section */}
+                <div className="py-2 text-center lg:text-left"></div>
                 <div className="py-2 text-center lg:text-left">
                     <h1 className="text-lg font-semibold">{date}</h1>
                     <h1 className="text-2xl md:text-3xl font-semibold text-[#3e8be4] mt-2">
