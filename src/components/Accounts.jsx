@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { userContext } from "../context/UserLogin";
 import { Greetings } from "./Dashborad";
@@ -7,7 +7,9 @@ import Loading from "./Loading";
 import { FaRupeeSign } from "react-icons/fa";
 import axios from "axios";
 import imgage from '../assets/image.png';
+import { toast, ToastContainer } from "react-toastify";
 export default function Account() {
+    const bankRef = useRef();
     const [date, setDate] = useState();
     const token = localStorage.getItem("tracker-token");
     const userBalance = useFetch("https://tracker-gamma-nine.vercel.app/api/user/total", token);
@@ -15,6 +17,28 @@ export default function Account() {
     const context = useContext(userContext);
     const name = localStorage.getItem("tracker-name");
     const email = localStorage.getItem("tracker-email");
+    const [amount,setAmount] = useState();
+
+    const handelAmountChange = (e) => {
+        // check whether the input is a number or not
+        if (isNaN(e.target.value)) {
+            toast.error("Please enter a valid number");
+            setAmount("");
+            rerturn;
+        }
+        if(e.target.value < 0){
+            toast.error("Amount cannot be negative");
+            setAmount("");
+            return;
+        }
+        if(e.target.value > 100000){
+            toast.error("Amount cannot be greater than 100000");
+            setAmount(e.target.value.slice(0,6));
+            return;
+        }
+        setAmount(e.target.value);
+    }
+
     const getExpensesSummary = async () => {
         try {
             const startDate = "2025-01-01";
@@ -46,6 +70,36 @@ export default function Account() {
         setDate(date.toLocaleDateString('en-US', options));
     }, []);
 
+    const handelSubmitAddAmount = async (e) => {
+        e.preventDefault();
+        console.log("Amount:", amount);
+        console.log("Bank:", bankRef.current.value);
+        if(amount === "" || bankRef.current.value === "bank"){
+
+            toast.error("Please enter a valid amount and select a bank");
+            return;
+        }
+        try {
+            const formatedAmount = parseFloat(amount);
+            const response = await axios.post("https://tracker-gamma-nine.vercel.app/api/user/add-bank", {
+                bankNames:{
+                    name: bankRef.current.value.charAt(0).toUpperCase() + bankRef.current.value.slice(1),
+                    amount: formatedAmount,
+                }
+            }, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            console.log("Add Amount Response:", response.data);
+            toast.success("Amount added successfully");
+            setAmount("");
+        } catch (error) {
+            console.error("Error adding amount:", error.response?.data || error.message);
+            toast.error("Error adding amount");
+        }
+    }
     return (
         <div className="grid grid-cols-1 grid-rows-6 h-full w-full p-5 pt-28 md:pt-10  overflow-hidden">
             <div className="row-span-5">
@@ -130,11 +184,11 @@ export default function Account() {
                                 <div className="flex flex-col gap-5">
                                     <div className="flex flex-col md:flex-row gap-10">
                                         <label className="text-xl mr-2" htmlFor="amount">Amount</label>
-                                        <input type="text" className="w-full md:w-96 outline-none border p-2 rounded-md border-gray-400" name="amount" id="amount" />
+                                        <input type="text" value={amount} autoComplete="off" onChange={handelAmountChange} className="w-full md:w-96 outline-none border p-2 rounded-md border-gray-400" name="amount" id="amount" />
                                     </div>
                                     <div className="flex flex-col md:flex-row gap-5">
                                         <label htmlFor="bank" className="text-xl">Select Bank</label>
-                                        <select name="bank" id="bank" className="w-full md:w-96 outline-none border p-2 rounded-md border-gray-400">
+                                        <select ref={bankRef} name="bank" id="bank" className="w-full md:w-96 outline-none border p-2 rounded-md border-gray-400">
                                             <option value="bank">Bank</option>
                                             <option value="wallet">Wallet</option>
                                             <option value="savings">Savings</option>
@@ -142,10 +196,13 @@ export default function Account() {
                                     </div>
                                 </div>
                                 <div className="flex flex-col md:flex-row justify-between items-center my-5 gap-5">
-                                    <button className="w-full md:w-auto px-20 py-1 bg-violet-500 hover:bg-violet-800 transition-transform rounded-md text-white font-semibold outline-none">
+                                    <button onClick={handelSubmitAddAmount} className="w-full md:w-auto px-20 py-1 bg-violet-500 hover:bg-violet-800 transition-transform rounded-md text-white font-semibold outline-none">
                                         Add
                                     </button>
-                                    <button className="w-full md:w-auto px-20 py-1 bg-red-500 hover:bg-red-800 transition-transform rounded-md text-white font-semibold outline-none">
+                                    <button onClick={()=>{
+                                        setAmount("");
+                                        bankRef.current.value = "";
+                                    }} className="w-full md:w-auto px-20 py-1 bg-red-500 hover:bg-red-800 transition-transform rounded-md text-white font-semibold outline-none">
                                         Clear
                                     </button>
                                 </div>
@@ -154,6 +211,7 @@ export default function Account() {
                     </div>
                 </div>
             </div>
+            <ToastContainer />
         </div>
     );
 }
