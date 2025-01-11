@@ -6,11 +6,11 @@ export default function layout(){
     
     return(
         <>
-            <div className="grid grid-cols-10 grid-rows-1 h-full w-full ">
-                <div className="col-span-0 md:col-span-2  md:block">
+            <div className="grid grid-cols-12 grid-rows-1 h-full w-full ">
+                <div className="col-span-0  md:col-span-0 lg:col-span-2  md:block">
                     <Sidebar />
                 </div>
-                <div className="col-span-10 md:col-span-8 ">
+                <div className="col-span-10 md:col-span-9 lg:col-span-10 ">
                     <Outlet />
                 </div>
             </div>

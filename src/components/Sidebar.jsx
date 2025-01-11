@@ -32,10 +32,10 @@ export default function Sidebar() {
     const navigate = useNavigate()
     return (
         <>
-            <div className="hidden md:grid grid-cols-1 grid-rows-12 px-2 bg-gray-300 w-96 h-screen  shadow-xl">
+            <div className="hidden lg:grid grid-cols-1 grid-rows-12 px-2 bg-gray-300 w-full h-screen  shadow-xl">
                 <div className="row-span-2 flex justify-start gap-10  px-5 items-center h-full">
                     <div>
-                        <img src={image} className='w-20 h-20' alt="User Icon" srcset="" />
+                        <img src={image} className='lg:w-20 lg:h-20 md:w-10 md:h-10' alt="User Icon" srcset="" />
                     </div>
                     <div>
                         <h1 className="font-semibold text-4xl">
@@ -65,7 +65,7 @@ export default function Sidebar() {
 
 
             
-            <div className="grid grid-cols-4 grid-rows-1 md:hidden fixed bg-gray-300 bottom-0 w-full ">
+            <div className="grid grid-cols-4 grid-rows-1 lg:hidden fixed bg-gray-300 bottom-0 w-full ">
             {MenuItmesList.map((ele, i) => (
           <div
             key={i}
@@ -87,15 +87,15 @@ export default function Sidebar() {
 const MenuItems = ({title,icon,navigate,route}) => {
     return (
         <>
-            <div className="hover:bg-violet-400 hover:text-white hover:rounded-xl py-2 flex justify-start gap-12 items-center px-10 w-full cursor-pointer" onClick={()=>{
+            <div className="hover:bg-violet-400 hover:text-white hover:rounded-xl py-2 flex justify-start gap-3 lg:gap-12 items-center  px-10 w-full cursor-pointer" onClick={()=>{
                 navigate(`/${route}`)
             }}>
 
-            <div className="text-4xl">
+            <div className="lg:text-4xl md:text-xl">
                 {icon}
             </div>
             <div>
-                <h1 className="text-2xl capitalize">
+                <h1 className="lg:text-2xl md:text-md capitalize">
                     {title}
                 </h1>
             </div>
