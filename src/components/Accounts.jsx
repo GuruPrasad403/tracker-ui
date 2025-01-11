@@ -18,7 +18,7 @@ export default function Account() {
     const name = localStorage.getItem("tracker-name");
     const email = localStorage.getItem("tracker-email");
     const [amount,setAmount] = useState();
-
+    const [loading, setLoading] = useState(false);
     const handelAmountChange = (e) => {
         // check whether the input is a number or not
         if (isNaN(e.target.value)) {
@@ -71,12 +71,14 @@ export default function Account() {
     }, []);
 
     const handelSubmitAddAmount = async (e) => {
+        setLoading(true);
         e.preventDefault();
         console.log("Amount:", amount);
         console.log("Bank:", bankRef.current.value);
         if(amount === "" || bankRef.current.value === "bank"){
 
             toast.error("Please enter a valid amount and select a bank");
+            setLoading(false);
             return;
         }
         try {
@@ -94,11 +96,15 @@ export default function Account() {
 
             console.log("Add Amount Response:", response.data);
             toast.success("Amount added successfully");
-            setAmount("");
+            setAmount("")
+            setLoading(false);
         } catch (error) {
             console.error("Error adding amount:", error.response?.data || error.message);
             toast.error("Error adding amount");
+            setLoading(false);
         }
+        setLoading(false);
+
     }
     return (
         <div className="grid grid-cols-1 grid-rows-6 h-full w-full p-5 pt-28 md:pt-10  overflow-hidden">
@@ -197,12 +203,12 @@ export default function Account() {
                                 </div>
                                 <div className="flex flex-col md:flex-row justify-between items-center my-5 gap-5">
                                     <button onClick={handelSubmitAddAmount} className="w-full md:w-auto px-20 py-1 bg-violet-500 hover:bg-violet-800 transition-transform rounded-md text-white font-semibold outline-none">
-                                        Add
+                                        {loading ? <Loading /> : "Add Amount"}
                                     </button>
                                     <button onClick={()=>{
                                         setAmount("");
                                         bankRef.current.value = "";
-                                    }} className="w-full md:w-auto px-20 py-1 bg-red-500 hover:bg-red-800 transition-transform rounded-md text-white font-semibold outline-none">
+                                    }} className="w-full md:w-auto px-20 py-1 bg-red-500 hover:bg-red-800 transition-transform rounded-md text-white font-semibold outline-none" disabled={loading}>
                                         Clear
                                     </button>
                                 </div>
