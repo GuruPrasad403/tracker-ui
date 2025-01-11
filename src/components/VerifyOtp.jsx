@@ -33,7 +33,8 @@ const VerifyOtp = () => {
     }
 
     try {
-      const response = await axios.post('https://tracker-gamma-nine.vercel.app/api/otp', { otp, userId });
+
+      const response = await axios.post('https://tracker-gamma-nine.vercel.app/api/otp', { otp, userId:user?._id });
 
       if (response.data.success === 1) {
         setTimeout(()=>navigate('/login'), 3000)
@@ -57,7 +58,7 @@ const VerifyOtp = () => {
     setLoader(true)
     try {
       setDisabled(true); // Disable the button immediately
-      const response = await axios.post('https://tracker-gamma-nine.vercel.app/api/sendotp', { userId, email:user?.email });
+      const response = await axios.post('https://tracker-gamma-nine.vercel.app/api/sendotp', { userId:user._id, email:user?.email });
       
       if (response.data.success === 1) {
         toast.success(response?.data?.msg);

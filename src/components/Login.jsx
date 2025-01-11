@@ -6,7 +6,7 @@ import { userContext } from "../context/UserLogin";
 
 export default function Login() {
     const context = useContext(userContext)
-    const {setUser} = context
+    const {setUser,user} = context
     const navigate = useNavigate();
     const [loader, setLoader] = useState(false);
     const [userInput, setUserInput] = useState({
@@ -44,7 +44,30 @@ export default function Login() {
         Object.values(errors).every((err) => err === "") &&
         userInput.email &&
         userInput.password;
-
+    const handleSendOtp = async () => {
+            setLoader(true)
+            try {
+            const userId = localStorage.getItem("tracker-id")
+              setDisabled(true); // Disable the button immediately
+              const response = await axios.post('https://tracker-gamma-nine.vercel.app/api/sendotp', { userId , email:user?.email });
+              
+              if (response.data.success === 1) {
+                toast.success(response?.data?.msg);
+              } else {
+                toast.error(response?.data?.msg || 'Failed to send OTP.');
+              }
+            } catch (error) {
+              setDisabled(false); // Re-enable the button if an error occurs
+              if (error.response?.data?.success === 0) {
+                toast.error(error.response.data.msg);
+                console.error(error.response.data);
+              } else {
+                toast.error('');
+                console.error(error);
+              }
+            }
+            setLoader(false)
+          };
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoader(true);
@@ -60,6 +83,7 @@ export default function Login() {
             });
 
             const data = response?.data;
+            console.log(data)
             if (data?.success == 0) {
                 toast.error(data?.msg)
                 if (data.errors && Array.isArray(data.errors)) {
@@ -73,14 +97,23 @@ export default function Login() {
                 return toast.error(data?.msg || "Something went wrong");
             }
             if(data?.success===1){
+                if(!data.user.isVerified){
+                    setUser(data?.user)
+                    localStorage.setItem("tracker-email", data?.email)
+                    localStorage.setItem("tracker-id", data?._id)
+                    handleSendOtp()
+                    setLoader(false);
+                    navigate("/otp")
+                }
+                else {
             localStorage.setItem("tracker-token", data?.token)
-            localStorage.setItem("tracker-name", data?.name)
-            localStorage.setItem("tracker-email", data?.email)
+            localStorage.setItem("tracker-name", data?.user?.name)
+            localStorage.setItem("tracker-email", data?.user?.email)
             setLoader(false);
             setUser(data?.user)
             toast.success(data?.msg);
-            setTimeout(()=> navigate("/dashboard"), 3000)
-
+            setTimeout(()=> navigate("/dashboard"), 2000)
+        }
             }
         } catch (error) {
             if(error?.response?.data?.success==0){
