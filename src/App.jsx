@@ -8,6 +8,7 @@ import PublicRoute from './components/PublicRoute ';
 import Dashboard from './components/Dashborad';
 import Layout from './pages/Layout';
 import Account from './components/Accounts';
+import Expenses from './components/Expenses';
 function App() {
   return (
     <>
@@ -24,7 +25,7 @@ function App() {
         <Route path='/' element={<Layout />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/account" element={<Account />} />
-          <Route path="/add-expenses" element={<div className='text-white'>Hi this is the add expenses</div>} />
+          <Route path="/add-expenses" element={<Expenses />} />
           <Route path="/expenses" element={<div className='text-white'>Hi this is the expenses</div>} />
         </Route>
         </Route>

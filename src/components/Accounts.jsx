@@ -8,6 +8,7 @@ import { FaRupeeSign } from "react-icons/fa";
 import axios from "axios";
 import imgage from '../assets/image.png';
 import { toast, ToastContainer } from "react-toastify";
+import { use } from "react";
 export default function Account() {
     const bankRef = useRef();
     const [date, setDate] = useState();
@@ -17,7 +18,7 @@ export default function Account() {
     const context = useContext(userContext);
     const name = localStorage.getItem("tracker-name");
     const email = localStorage.getItem("tracker-email");
-    const [amount,setAmount] = useState();
+    const [amount, setAmount] = useState();
     const [loading, setLoading] = useState(false);
     const handelAmountChange = (e) => {
         // check whether the input is a number or not
@@ -26,14 +27,14 @@ export default function Account() {
             setAmount("");
             rerturn;
         }
-        if(e.target.value < 0){
+        if (e.target.value < 0) {
             toast.error("Amount cannot be negative");
             setAmount("");
             return;
         }
-        if(e.target.value > 100000){
+        if (e.target.value > 100000) {
             toast.error("Amount cannot be greater than 100000");
-            setAmount(e.target.value.slice(0,6));
+            setAmount(e.target.value.slice(0, 6));
             return;
         }
         setAmount(e.target.value);
@@ -41,8 +42,8 @@ export default function Account() {
 
     const getExpensesSummary = async () => {
         try {
-            const startDate = "2025-01-01";
-            const endDate = "2025-01-10";
+            const startDate = new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata", hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }).split(",")[0] + " 00:00:00";
+            const endDate = new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata", hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }).split(",")[0] + " 23:59:59";
 
             const response = await axios.get("http://localhost:3000/api/user/expenses-summary", {
                 headers: {
@@ -56,7 +57,7 @@ export default function Account() {
 
             console.log("Expenses Summary:", response.data);
         } catch (error) {
-            console.error("Error fetching expenses summary:", error.response?.data || error.message);
+            console.error("Error fetching expenses summary:", error.response?.data.msg || error.message);
         }
     };
 
@@ -75,16 +76,11 @@ export default function Account() {
         e.preventDefault();
         console.log("Amount:", amount);
         console.log("Bank:", bankRef.current.value);
-        if(amount === "" || bankRef.current.value === "bank"){
 
-            toast.error("Please enter a valid amount and select a bank");
-            setLoading(false);
-            return;
-        }
         try {
             const formatedAmount = parseFloat(amount);
             const response = await axios.post("https://tracker-gamma-nine.vercel.app/api/user/add-bank", {
-                bankNames:{
+                bankNames: {
                     name: bankRef.current.value.charAt(0).toUpperCase() + bankRef.current.value.slice(1),
                     amount: formatedAmount,
                 }
@@ -99,13 +95,17 @@ export default function Account() {
             setAmount("")
             setLoading(false);
         } catch (error) {
-            console.error("Error adding amount:", error.response?.data || error.message);
+            console.error("Error adding amount:", error.response?.data?.m || error.message);
             toast.error("Error adding amount");
             setLoading(false);
         }
         setLoading(false);
 
     }
+    useEffect(() => {
+        const getExpenses = getExpensesSummary();
+        console.log("Expenses Summary", getExpenses);
+    }, []);
     return (
         <div className="grid grid-cols-1 grid-rows-6 h-full w-full p-5 pt-28 md:pt-10  overflow-hidden">
             <div className="row-span-5">
@@ -205,7 +205,7 @@ export default function Account() {
                                     <button onClick={handelSubmitAddAmount} className="w-full md:w-auto px-20 py-1 bg-violet-500 hover:bg-violet-800 transition-transform rounded-md text-white font-semibold outline-none">
                                         {loading ? <Loading /> : "Add Amount"}
                                     </button>
-                                    <button onClick={()=>{
+                                    <button onClick={() => {
                                         setAmount("");
                                         bankRef.current.value = "";
                                     }} className="w-full md:w-auto px-20 py-1 bg-red-500 hover:bg-red-800 transition-transform rounded-md text-white font-semibold outline-none" disabled={loading}>
@@ -222,4 +222,26 @@ export default function Account() {
     );
 }
 
+//this function should only get the today 0:00:00 and 23:59:59 total expenses tarnsaction
 
+const getExpensesSummary = async () => {
+    const startDate = new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata", hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }).split(",")[0] + " 00:00:00";
+    const endDate = new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata", hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }).split(",")[0] + " 23:59:59";
+    console.log("Start Date:", startDate);
+    console.log("End Date:", endDate);
+    try {
+        const response = await axios.get("https://tracker-gamma-nine.vercel.app//user/expenses", {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+            params: {
+                startDate,
+                endDate,
+            },
+        });
+
+        console.log("Expenses Summary:", response.data);
+    } catch (error) {
+        console.error("Error fetching expenses summary:", error.response?.data || error.message);
+    }
+}
