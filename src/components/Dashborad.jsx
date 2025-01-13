@@ -2,7 +2,7 @@ import image from '../assets/image.png';
 import { CiCalendarDate } from "react-icons/ci";
 import { FaAngleDown } from "react-icons/fa6";
 import { IoIosArrowRoundBack, IoIosArrowRoundForward } from "react-icons/io";
-import { FaVideo } from "react-icons/fa";
+import { GiExpense } from "react-icons/gi";
 import { LuCalendarClock } from "react-icons/lu";
 import { RxCross1 } from "react-icons/rx";
 import { TfiVideoClapper } from "react-icons/tfi";
@@ -11,12 +11,29 @@ import Loading from './Loading';
 import { useEffect, useState } from 'react';
 import Noexpense from '../assets/NoExpense.png';
 
+const meetings = [
+    {
+        time: "11:30 AM",
+        live: true,
+        title: "UX Webinar"
+    },
+    {
+        title: "Laddu",
+        description: "Eating Laddu",
+        amount: -80,
+        created: "2025-01-13T07:38:55.582Z",
+        _id: "6784c380ff92676777d9cef4",
+        category: "Food"
+    },
+];
+
 export default function Mainsection() {
     const [date, setDate] = useState();
     const token = localStorage.getItem("tracker-token");
     const { userInfo, loading } = useFetch("https://tracker-gamma-nine.vercel.app/api/user/info", token);
     const userBalance = useFetch("https://tracker-gamma-nine.vercel.app/api/user/total", token);
-
+    const userExpenses= useFetch("https://tracker-gamma-nine.vercel.app/api/user/expenses-today", token);
+    console.log("this is the expenses",userExpenses.userInfo.expenses);  
     useEffect(() => {
         const date = new Date();
         const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
@@ -33,7 +50,6 @@ export default function Mainsection() {
             {/* Greetings and Expenditure Section */}
             <div className="flex flex-col gap-6 w-full mb-6 lg:col-span-5">
                 {/* Greeting Section */}
-                <div className="py-2 text-center lg:text-left"></div>
                 <div className="py-2 text-center lg:text-left">
                     <h1 className="text-lg font-semibold">{date}</h1>
                     <h1 className="text-2xl md:text-3xl font-semibold text-[#3e8be4] mt-2">
@@ -49,16 +65,23 @@ export default function Mainsection() {
                     </div>
 
                     <div className="mt-5 h-96 overflow-auto">
-                        {loading ? (
-                            <div className="w-full h-full flex justify-center items-center">
-                                <Loading />
-                            </div>
-                        ) : (
-                            <div className="flex flex-col items-center">
-                                <img src={Noexpense} alt="No Expense" />
-                                <h1 className="text-center text-xl font-semibold mt-3">No Expense Today</h1>
-                            </div>
-                        )}
+                        { !userExpenses?.userInfo?.expenses ? 
+                              <div className="flex flex-col items-center justify-center h-full "> 
+                              <img src={Noexpense} alt="No Expense" />
+                              <h1 className="text-center text-xl font-semibold mt-3">No Expense Today</h1>
+                          </div>
+                        : 
+                        userExpenses?.userInfo?.expenses?.map((ele, index) => (
+                            <Expenses
+                                time={ele.time}
+                                title={ele.title}
+                                live={ele.live}
+                                key={ele?._id || index}
+                                amount={ele?.amount}
+                                category={ele?.category}
+                                description={ele?.description}
+                            />
+                        ))}
                     </div>
                 </div>
             </div>
@@ -80,7 +103,6 @@ export default function Mainsection() {
         </div>
     );
 }
-
 
 /* Profile Component */
 const Profile = ({ email, name, date, loading }) => {
@@ -116,3 +138,29 @@ export const Greetings = () => {
     const greet = hours < 12 ? "Morning" : hours <= 17 ? "Afternoon" : "Evening";
     return <span>Good {greet},</span>;
 };
+
+/* Expenses Component */
+const Expenses = ({ title, amount, category, description }) => {
+    return (
+        <div className='flex flex-row gap-5 justify-around items-center w-full  border-b-2 pb-3 '>
+            <div className=' border-r-2 pr-4 border-[#3fe0cf]'>
+                <div>
+                    <h1 className='text-lg font-semibold text-red-400'>{amount}</h1>
+                </div>
+                <div>
+                    <h1 className='text-md text-gray-500 w-32'>{category}</h1>
+                </div>
+            </div>
+            <div className='flex-1'>
+                <div className='w-full'>
+                    <h1 className='flex flex-row items-center gap-2 font-semibold'>
+                        <span>{title}</span> <GiExpense className={"text-red-500 text-2xl" } />
+                    </h1>
+                </div>
+                <div>
+                    <h1 className='text-lg  w-full h-14 overflow-auto  scrollbar-hide'>{description}</h1>
+                </div>
+            </div>
+        </div>
+    );
+}

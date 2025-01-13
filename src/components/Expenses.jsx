@@ -10,7 +10,7 @@ const options = ["Housing","Transportation","Food","Medical","Entertainment","Ed
 export default function Expenses() {
 
     const token = localStorage.getItem("tracker-token");
-    const userBalance = useFetch("https://tracker-gamma-nine.vercel.app/api/user/total", token);
+    const userBalance =  useFetch("https://tracker-gamma-nine.vercel.app/api/user/total", token);
     const [userInput, setUserInput] = useState({
         title:'',
         amount: 0,
@@ -175,6 +175,7 @@ export default function Expenses() {
                                     onChange={(e) => setUserInput({ ...userInput, category: e.target.value })}
                                     value={userInput?.category}
                                 >
+                                    <option>Select Option </option>
                                 {options.map((ele, i) => (
                                     <option key={i} value={ele}>
                                         {ele}
@@ -190,6 +191,7 @@ export default function Expenses() {
                                     onChange={(e) => setUserInput({ ...userInput, bank: e.target.value })}
                                     value={userInput?.bank}
                                 >
+                                    <option>Select Option </option>
                                     <option>Bank</option>
                                     <option>Wallet</option>
                                     <option>Savings</option>

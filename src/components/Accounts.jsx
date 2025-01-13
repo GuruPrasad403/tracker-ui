@@ -14,6 +14,7 @@ export default function Account() {
     const [date, setDate] = useState();
     const token = localStorage.getItem("tracker-token");
     const userBalance = useFetch("https://tracker-gamma-nine.vercel.app/api/user/total", token);
+    console.log("User Balance:", userBalance);
     const navigate = useNavigate();
     const context = useContext(userContext);
     const name = localStorage.getItem("tracker-name");
@@ -39,13 +40,51 @@ export default function Account() {
         }
         setAmount(e.target.value);
     }
+    const handelToDeleteAllExpenses = async () => {
+        try {
+            const response = await axios.delete("https://tracker-gamma-nine.vercel.app/api/user/delete-expenses", {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            const data = response.data;
+            if(data?.success ===0){
+                toast.error(data?.msg || "Error deleting all expenses");
+            }
+            if(data?.success ===1){
+                toast.success(data?.msg || "All expenses deleted successfully");
+            }
 
+        } catch (error) {
+            console.error("Error deleting all expenses:", error.response?.data.msg || error.message);
+            toast.error(error.response?.data.msg || "Error deleting all expenses");
+        }
+    }
+    const handelToResetBalance = async () => {
+        try {
+            const response = await axios.delete("https://tracker-gamma-nine.vercel.app/api/user/reset-balance", {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            const data = response.data;
+            if(data?.success ===0){
+                toast.error(data?.msg || "Error resetting balance");
+            }
+            if(data?.success ===1){
+                toast.success(data?.msg || "Balance reset successfully");
+            }
+        } catch (error) {
+            console.error("Error resetting balance:", error.response?.data.msg || error.message);
+            toast.error(error.response?.data.msg || "Error resetting balance");
+        }
+    }
     const getExpensesSummary = async () => {
         try {
             const startDate = new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata", hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }).split(",")[0] + " 00:00:00";
             const endDate = new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata", hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }).split(",")[0] + " 23:59:59";
 
-            const response = await axios.get("http://localhost:3000/api/user/expenses-summary", {
+            const response = await axios.get("https://tracker-gamma-nine.vercel.app/api/user/expenses-summary", {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -172,13 +211,23 @@ export default function Account() {
                                     <h1 className="text-xl">********</h1>
                                 </div>
                                 <div className="flex flex-row gap-2">
-                                    <button className="px-2 py-1 bg-violet-500 hover:bg-violet-800 transition-transform rounded-md text-white font-semibold outline-none">
+                                    <button className="px-2 py-1 bg-violet-500 hover:bg-violet-800 transition-transform rounded-md text-white  outline-none">
                                         Update User
                                     </button>
-                                    <button className="px-2 py-1 border-2 text-violet-800 hover:bg-violet-800 transition-transform rounded-md hover:text-white font-semibold outline-none">
+                                    <button className="px-2 py-1 border-2 text-violet-800 hover:bg-violet-800 transition-transform rounded-md hover:text-white font-semibold outline-none"
+                                    onClick={handelToDeleteAllExpenses}>
+                                    
                                         Reset All Expenses
                                     </button>
+                                    <button className="px-2 py-1 border-2 text-violet-800 hover:bg-violet-800 transition-transform rounded-md hover:text-white font-semibold outline-none"
+                                    onClick={handelToResetBalance}>
+                                    
+                                        Reset Balance
+                                    </button>
                                 </div>
+                            </div>
+                            <div className="flex flex-col justify-center items-center opacity-55">
+                                <h1 className="text-[10px] md:text-sm font-semibold text-red-500">Please Rest All your expense and balance on 1st of Every month</h1>
                             </div>
                         </div>
 
