@@ -9,6 +9,7 @@ import Dashboard from './components/Dashborad';
 import Layout from './pages/Layout';
 import Account from './components/Accounts';
 import Expenses from './components/Expenses';
+import ChartsOverviewDemo from './components/Index';
 function App() {
   return (
     <>
@@ -27,7 +28,7 @@ function App() {
           <Route path="/*" element={<Dashboard />} />
           <Route path="/account" element={<Account />} />
           <Route path="/add-expenses" element={<Expenses />} />
-          <Route path="/expenses" element={<div className='text-white'>Hi this is the expenses</div>} />
+          <Route path="/expenses" element={<ChartsOverviewDemo />} />
         </Route>
         </Route>
       </Routes>

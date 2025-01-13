@@ -4,6 +4,7 @@ import { FaRupeeSign } from "react-icons/fa6";
 import Loading from "./Loading";
 import { useState } from "react";
 import axios from "axios";
+import ChartsOverviewDemo from "./Index";
 const options = ["Housing", "Transportation", "Food", "Medical", "Entertainment", "Education", "Insurance", "Taxes", "PersonalCare", "Others"]
 
 
@@ -213,7 +214,14 @@ export default function Expenses() {
                             </div>
                         </div>
                     </div>
-                    <div>this is one </div>
+                    <div className="shadow-2xl rounded-2xl gap-16 p-5 flex flex-col justify-between items-center h-[500px]">
+                        <div>
+                            <h1 className="md:text-3xl text-md font-semibold">Expenses Graph       </h1>
+                        </div>
+                        <div className="w-full h-96">
+                            <ChartsOverviewDemo />
+                        </div>
+                    </div>
 
                 </div>
 

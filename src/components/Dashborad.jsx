@@ -88,7 +88,7 @@ export default function Mainsection() {
                 <div className="bg-white shadow-xl rounded-t-xl text-center p-3">
                     <h1 className="text-2xl font-semibold">
                         Total Balance: ₹{" "}
-                        {userBalance?.loading ? <Loading /> : userBalance.userInfo?.totalAmount || null}
+                        {userBalance?.loading ? <Loading /> : userBalance.userInfo?.totalAmount || 0}
                     </h1>
                 </div>
                 <div className="grid grid-cols-2 bg-white shadow-xl rounded-b-xl gap-4 p-5">
