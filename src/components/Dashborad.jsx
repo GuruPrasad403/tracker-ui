@@ -41,7 +41,7 @@ export default function Mainsection() {
     }, []);
 
     return (
-        <div className="flex flex-col lg:grid lg:grid-cols-12 lg:gap-4 px-4 md:px-6 lg:px-10 lg:mt-20">
+        <div className="flex flex-col lg:grid lg:grid-cols-12 lg:gap-4 px-4 md:px-6 lg:px-10 lg:mt-20 h-ful ">
             {/* Profile Section */}
             <div className="flex flex-col items-center w-full mb-6 lg:col-span-3">
                 <Profile email={userInfo?.email} name={userInfo?.name} date={userInfo?.joined} loading={loading} />
@@ -87,7 +87,7 @@ export default function Mainsection() {
             </div>
 
             {/* Total Balance Section */}
-            <div className="w-full md:mb-6 lg:col-span-4">
+            <div className="w-full md:mb-6 lg:col-span-4 pb-10 md:p-4 mb-20">
                 <div className="bg-white shadow-xl rounded-t-xl text-center p-3">
                     <h1 className="text-2xl font-semibold">
                         Total Balance: ₹{" "}

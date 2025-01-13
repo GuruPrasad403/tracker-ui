@@ -4,15 +4,15 @@ import { FaRupeeSign } from "react-icons/fa6";
 import Loading from "./Loading";
 import { useState } from "react";
 import axios from "axios";
-const options = ["Housing","Transportation","Food","Medical","Entertainment","Education","Insurance","Taxes","PersonalCare","Others"]
+const options = ["Housing", "Transportation", "Food", "Medical", "Entertainment", "Education", "Insurance", "Taxes", "PersonalCare", "Others"]
 
 
 export default function Expenses() {
 
     const token = localStorage.getItem("tracker-token");
-    const userBalance =  useFetch("https://tracker-gamma-nine.vercel.app/api/user/total", token);
+    const userBalance = useFetch("https://tracker-gamma-nine.vercel.app/api/user/total", token);
     const [userInput, setUserInput] = useState({
-        title:'',
+        title: '',
         amount: 0,
         description: "",
         category: "",
@@ -23,14 +23,14 @@ export default function Expenses() {
         //check for the given amount is valid or not, there should not be any character or negative number
         const amount = e.target.value;
         if (isNaN(amount)) {
-            if(amount < 0){
+            if (amount < 0) {
                 toast.error("Amount should be a positive number");
                 setUserInput({ ...userInput, amount: "" });
                 return;
             }
-            
+
             toast.error("Amount should be a number");
-            setUserInput({ ...userInput, amount: "" });     
+            setUserInput({ ...userInput, amount: "" });
             return;
         }
         setUserInput({ ...userInput, amount: -Math.abs(Number(e.target.value)) });
@@ -43,7 +43,7 @@ export default function Expenses() {
             setUserInput({ ...userInput, description: "" });
             return;
         }
-        if(description === "")
+        if (description === "")
             toast.error("Description should not be empty");
         const specialCharPattern = /[^a-zA-Z0-9 ]/;
         if (specialCharPattern.test(description)) {
@@ -61,7 +61,7 @@ export default function Expenses() {
             setUserInput({ ...userInput, title: "" });
             return;
         }
-        if(title === "")
+        if (title === "")
             toast.error("Title should not be empty");
         const specialCharPattern = /[^a-zA-Z0-9 ]/;
         if (specialCharPattern.test(title)) {
@@ -73,29 +73,31 @@ export default function Expenses() {
 
     }
 
-    const handelSubmit = async() => {
+    const handelSubmit = async () => {
         // check for the given input is valid or not, if not then show the error message
-        if(userInput.amount === "" || userInput.description === "" || userInput.category === ""){
+        if (userInput.amount === "" || userInput.description === "" || userInput.category === "") {
             toast.error("All fields are required");
             return;
         }
         // send the data to the server
         try {
-            const response = await axios.post('https://tracker-gamma-nine.vercel.app/api/user/add-expense', { ...userInput, category: userInput.category,bank: userInput.bank },
-                {headers: {
-                    Authorization: `Bearer ${token}`,
-                }}
+            const response = await axios.post('https://tracker-gamma-nine.vercel.app/api/user/add-expense', { ...userInput, category: userInput.category, bank: userInput.bank },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    }
+                }
             );
             if (response.data.success === 1) {
                 toast.success(response?.data?.msg);
             } else {
                 toast.error(response?.data?.msg || 'Failed to add the expense.');
             }
-            
+
         } catch (error) {
             console.error(error);
             toast.error(error?.response?.data?.msg || 'Failed to add the expense.');
-            
+
         }
     }
 
@@ -130,87 +132,89 @@ export default function Expenses() {
                 and in the left side user can his all expenses, in 1st input box it should take amount and int the secont input it should take the discriptiona and in the thired option it should take the categor of the expense 
                 and there should be two button in that one should be to submit the form and in the other oen it should be claer the form  */}
                 <div className="grid grid-cols-1 gap-5 md:grid-cols-2 grid-rows-1 md:grid-rows-2 px-5 md:px-10 place-content-center w-full h-96 mt-20">
-                    <div>this is one </div>
                     <div>
-                    <div className="shadow-2xl rounded-2xl  p-5">
-                        <div>
-                            <h1 className="md:text-3xl text-md font-semibold">Add Expense</h1>
-                        </div>
-                        <div className="flex flex-col gap-5">
-                            <div className="flex flex-col">
-                                <label htmlFor="title">Title</label>
-                                <input
-                                    type="text"
-                                    value={userInput?.title}
-                                    onChange={handelTitleChange}
-                                    className="p-2 rounded-md border-2 border-gray-300"
-                                    placeholder="Enter Title"
-                                />
+                        <div className="shadow-2xl rounded-2xl  p-5">
+                            <div>
+                                <h1 className="md:text-3xl text-md font-semibold">Add Expense</h1>
                             </div>
-                            <div className="flex flex-col">
-                                <label htmlFor="amount">Amount</label>
-                                <input
-                                    type="text"
-                                    value={userInput?.amount}
-                                    onChange={handelAmountChange}
-                                    className="p-2 rounded-md border-2 border-gray-300"
-                                    placeholder="Enter Amount (Amount should be in Negative eg. -100)"
-                                />
-                            </div>
-                            <div className="flex flex-col">
-                                <label htmlFor="description">Description</label>
-                                <input
-                                    type="text"
-                                    value={userInput?.description}
-                                    onChange={handelDiscriptionChange}
-                                    className="p-2 rounded-md border-2 border-gray-300"
-                                    placeholder="Enter Description"
-                                />
-                            </div>
-                            <div className="flex flex-col">
-                                <select
-                                    className="p-2 rounded-md border-2 border-gray-300"
-                                    name="category"
-                                    id="category"
-                                    onChange={(e) => setUserInput({ ...userInput, category: e.target.value })}
-                                    value={userInput?.category}
-                                >
-                                    <option>Select Option </option>
-                                {options.map((ele, i) => (
-                                    <option key={i} value={ele}>
-                                        {ele}
-                                    </option>
-                                ))}
-                                </select>
-                            </div>
-                            <div className="flex flex-col">
-                                <select
-                                    className="p-2 rounded-md border-2 border-gray-300"
-                                    name="bank"
-                                    id="bank"
-                                    onChange={(e) => setUserInput({ ...userInput, bank: e.target.value })}
-                                    value={userInput?.bank}
-                                >
-                                    <option>Select Option </option>
-                                    <option>Bank</option>
-                                    <option>Wallet</option>
-                                    <option>Savings</option>
-                                </select>
-                            </div>
-                            <div className="flex flex-row justify-between gap-10 w-full">
-                                <button className=" bg-violet-500 text-white p-2 rounded-md w-96 outline-none" onClick={handelSubmit}>Submit</button>
-                                <button className="hover:bg-red-500  hover:text-white p-2 rounded-md w-96 outline-none border-2 border-violet-500" onClick={()=>{
-                                    setUserInput({
-                                        title:'',
-                                        amount: "",
-                                        description: "",
-                                        category: "",
-                                    })
-                                }}>Clear</button>
+                            <div className="flex flex-col gap-5">
+                     
+                                <div className="flex flex-col">
+                                    <label htmlFor="title">Title</label>
+                                    <input
+                                        type="text"
+                                        value={userInput?.title}
+                                        onChange={handelTitleChange}
+                                        className="p-2 rounded-md border-2 border-gray-300"
+                                        placeholder="Enter Title"
+                                    />
+                                </div>
+                                <div className="flex flex-col">
+                                    <label htmlFor="amount">Amount</label>
+                                    <input
+                                        type="text"
+                                        value={userInput?.amount}
+                                        onChange={handelAmountChange}
+                                        className="p-2 rounded-md border-2 border-gray-300"
+                                        placeholder="Enter Amount (Amount should be in Negative eg. -100)"
+                                    />
+                                </div>
+                                <div className="flex flex-col">
+                                    <label htmlFor="description">Description</label>
+                                    <input
+                                        type="text"
+                                        value={userInput?.description}
+                                        onChange={handelDiscriptionChange}
+                                        className="p-2 rounded-md border-2 border-gray-300"
+                                        placeholder="Enter Description"
+                                    />
+                                </div>
+                                <div className="flex flex-col">
+                                    <select
+                                        className="p-2 rounded-md border-2 border-gray-300"
+                                        name="category"
+                                        id="category"
+                                        onChange={(e) => setUserInput({ ...userInput, category: e.target.value })}
+                                        value={userInput?.category}
+                                    >
+                                        <option>Select Option </option>
+                                        {options.map((ele, i) => (
+                                            <option key={i} value={ele}>
+                                                {ele}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div className="flex flex-col">
+                                    <select
+                                        className="p-2 rounded-md border-2 border-gray-300"
+                                        name="bank"
+                                        id="bank"
+                                        onChange={(e) => setUserInput({ ...userInput, bank: e.target.value })}
+                                        value={userInput?.bank}
+                                    >
+                                        <option>Select Option </option>
+                                        <option>Bank</option>
+                                        <option>Wallet</option>
+                                        <option>Savings</option>
+                                    </select>
+                                </div>
+                                <div className="flex flex-row justify-between gap-10 w-full">
+                                    <button className=" bg-violet-500 text-white p-2 rounded-md w-96 outline-none" onClick={handelSubmit}>Submit</button>
+                                    <button className="hover:bg-red-500  hover:text-white p-2 rounded-md w-96 outline-none border-2 border-violet-500" onClick={() => {
+                                        setUserInput({
+                                            title: '',
+                                            amount: "",
+                                            description: "",
+                                            category: "",
+                                        })
+                                    }}>Clear</button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    </div>
+                    <div>this is one </div>
+
                 </div>
 
             </div>
