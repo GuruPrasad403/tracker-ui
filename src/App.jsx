@@ -24,6 +24,7 @@ function App() {
         <Route element={<ProtectedRoute />}>
         <Route path='/' element={<Layout />}>
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/*" element={<Dashboard />} />
           <Route path="/account" element={<Account />} />
           <Route path="/add-expenses" element={<Expenses />} />
           <Route path="/expenses" element={<div className='text-white'>Hi this is the expenses</div>} />

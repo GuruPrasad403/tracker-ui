@@ -33,7 +33,7 @@ export default function Expenses() {
             setUserInput({ ...userInput, amount: "" });     
             return;
         }
-        setUserInput({ ...userInput, amount: (-0 + parseFloat(e.target.value)) });
+        setUserInput({ ...userInput, amount: -Math.abs(Number(e.target.value)) });
     }
     const handelDiscriptionChange = (e) => {
         // check for the given discription is valid or not, there should not be any special character and it should a max length of 50 char
