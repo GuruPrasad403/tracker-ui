@@ -132,8 +132,8 @@ export default function Expenses() {
                 {/* this is the section where we will be having two section in the 1st section the total garph will be displayed on x-axis and on y-axis amount relatd to that particular category 
                 and in the left side user can his all expenses, in 1st input box it should take amount and int the secont input it should take the discriptiona and in the thired option it should take the categor of the expense 
                 and there should be two button in that one should be to submit the form and in the other oen it should be claer the form  */}
-                <div className="grid grid-cols-1 gap-5 md:grid-cols-2 grid-rows-1 md:grid-rows-2 px-5 md:px-10 place-content-center w-full h-96 mt-20">
-                    <div>
+                <div className="grid grid-cols-1 gap-2 md:gap-10 md:grid-cols-2 grid-rows-1 md:grid-rows-2 px-5 md:px-10 place-content-center w-full h-full md:h-96 md:mt-20">
+                    <div className="mt-20  md:mt-0">
                         <div className="shadow-2xl rounded-2xl  p-5">
                             <div>
                                 <h1 className="md:text-3xl text-md font-semibold">Add Expense</h1>
