@@ -10,25 +10,11 @@ import useFetch from '../hook/useFetch';
 import Loading from './Loading';
 import { useEffect, useState } from 'react';
 import Noexpense from '../assets/NoExpense.png';
-
-const meetings = [
-    {
-        time: "11:30 AM",
-        live: true,
-        title: "UX Webinar"
-    },
-    {
-        title: "Laddu",
-        description: "Eating Laddu",
-        amount: -80,
-        created: "2025-01-13T07:38:55.582Z",
-        _id: "6784c380ff92676777d9cef4",
-        category: "Food"
-    },
-];
+import { useNavigate } from 'react-router-dom';
 
 export default function Mainsection() {
     const [date, setDate] = useState();
+    const navigate = useNavigate();
     const token = localStorage.getItem("tracker-token");
     const { userInfo, loading } = useFetch("https://tracker-gamma-nine.vercel.app/api/user/info", token);
     const userBalance = useFetch("https://tracker-gamma-nine.vercel.app/api/user/total", token);
@@ -42,9 +28,20 @@ export default function Mainsection() {
 
     return (
         <div className="flex flex-col lg:grid lg:grid-cols-12 lg:gap-4 px-4 md:px-6 lg:px-10 lg:mt-20 h-ful ">
+            <div className='flex flex-row items-center justify-end gap-2 mt-4 absolute right-0 md:hidden '>
+                    <button 
+                    onClick={() => {
+                        localStorage.clear()
+                        navigate('/login')}
+                    }
+                    className='flex flex-row items-center gap-2 bg-violet-400  hover:bg-red-500 text-white px-3 py-2 mr-2 rounded-lg'>
+                        Logout
+                    </button>
+                </div>
             {/* Profile Section */}
             <div className="flex flex-col items-center w-full mb-6 lg:col-span-3">
                 <Profile email={userInfo?.email} name={userInfo?.name} date={userInfo?.joined} loading={loading} />
+                
             </div>
 
             {/* Greetings and Expenditure Section */}
